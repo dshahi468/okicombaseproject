@@ -1,11 +1,14 @@
 # Use the node image from official Docker Hub
 FROM node:20.14.0-alpine3.20
 
+# Install bash
+RUN apk update && apk add bash
+
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy package.json and yarn.lock to install dependencies
-COPY frontend/package.json frontend/yarn.lock* ./
+COPY frontend/package.json frontend/yarn.lock ./
 
 # Install project dependencies
 RUN yarn install
@@ -17,7 +20,8 @@ COPY frontend/ .
 EXPOSE 3000
 
 # Start the Vite development server explicitly on port 3000
-CMD ["yarn", "dev", "--port", "3000"]
+CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "3000"]
+
 
 # # Use the node image from official Docker Hub
 # FROM node:20.14.0-alpine3.20 as build-stage
