@@ -87,7 +87,7 @@ services:
 
   app:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     container_name: vueCognito
     ports:

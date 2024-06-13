@@ -23,3 +23,9 @@ docker run --rm \
  laravelsail/php83-composer \
  composer install --ignore-platform-reqs
 ```
+
+3. Build the docker container
+
+```
+docker compose up -d
+```
