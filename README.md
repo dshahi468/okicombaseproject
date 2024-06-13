@@ -28,4 +28,13 @@ docker run --rm \
 
 ```
 docker compose up -d
+docker exec -it laravelAuthentication bash
+yarn install
+yarn dev
 ```
+
+4. Access your resources as below:
+
+- [Laravel Backend Application](http://localhost:8000)
+- [VueJS Frontend Application](http://localhost:8081)
+- [PostGreSQL Admin](http://localhost:8087)
