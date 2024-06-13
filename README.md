@@ -14,7 +14,13 @@ For installation follow the following guide:
 git clone https://github.com/dshahi468/okicombaseproject.git
 ```
 
-2. Run the docker composer command
+2. Route to the project directory
+
+```
+cd okicombaseproject
+```
+
+3. Run the docker composer command
 
 ```
 docker run --rm \
@@ -24,13 +30,13 @@ docker run --rm \
  composer install --ignore-platform-reqs
 ```
 
-3. Create $\textcolor{red}{\text{.env.example}}$ and configure $\textcolor{red}{\text{.env}}$ file
+4. Create $\textcolor{red}{\text{.env.example}}$ and configure $\textcolor{red}{\text{.env}}$ file
 
 ```
 Copy .env.example file and create .env file
 ```
 
-4. Build the docker container
+5. Build the docker container
 
 ```
 docker compose up -d
@@ -39,14 +45,14 @@ yarn install
 yarn dev
 ```
 
-5. Migrate database
+6. Migrate database
 
 ```
 docker exec -it laravelAuthentication bash
 php artisan mgirate
 ```
 
-6. Access your resources as below:
+7. Access your resources as below:
 
 - [Laravel Backend Application](http://localhost:8000)
 - [VueJS Frontend Application](http://localhost:8081)
