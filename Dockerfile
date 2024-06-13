@@ -14,6 +14,8 @@ COPY frontend/ .
 RUN npm run build
 # Use the lightweight Nginx image from the previous stage for the nginx container
 FROM nginx:stable-alpine as production-stage
+# Install bash
+RUN apk add --no-cache bash
 # Copy the build application from the previous stage to the Nginx container
 COPY --from=build-stage /app/frontend/dist /usr/share/nginx/html
 # Copy the nginx configuration file

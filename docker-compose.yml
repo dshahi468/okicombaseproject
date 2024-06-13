@@ -24,21 +24,21 @@ services:
     networks:
       - sail
     depends_on:
-      - selenium
+      # - selenium
       - pgsql
       - phppgadmin
 
-  selenium:
-    # for windows and linux
-    # image: selenium/standalone-chrome
-    # for mac containing Apple Silicon chip
-    image: "seleniarm/standalone-chromium"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - "/dev/shm:/dev/shm"
-    networks:
-      - sail
+  # selenium:
+  #   # for windows and linux
+  #   # image: selenium/standalone-chrome
+  #   # for mac containing Apple Silicon chip
+  #   image: "seleniarm/standalone-chromium"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   volumes:
+  #     - "/dev/shm:/dev/shm"
+  #   networks:
+  #     - sail
 
   pgsql:
     image: "postgres:15"
@@ -84,13 +84,13 @@ services:
       - ./servers.json:/pgadmin4/servers.json
       - ./setup_pgadmin.sh:/docker-entrypoint-initdb.d/setup_pgadmin.sh
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: vueCognito
-    ports:
-      - 8081:80
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: vueCognito
+  #   ports:
+  #     - 8081:80
 
   nginx:
     image: nginx:alpine
@@ -101,6 +101,21 @@ services:
       - 8082:80
     depends_on:
       - app
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: vueCognito
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app/frontend
+    environment:
+      - NODE_ENV=development
+    networks:
+      - sail
+
 networks:
   sail:
     driver: bridge

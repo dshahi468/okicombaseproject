@@ -39,7 +39,14 @@ yarn install
 yarn dev
 ```
 
-5. Access your resources as below:
+5. Migrate database
+
+```
+docker exec -it laravelAuthentication bash
+php artisan mgirate
+```
+
+6. Access your resources as below:
 
 - [Laravel Backend Application](http://localhost:8000)
 - [VueJS Frontend Application](http://localhost:8081)
