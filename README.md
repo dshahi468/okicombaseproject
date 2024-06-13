@@ -57,3 +57,9 @@ php artisan mgirate
 - [Laravel Backend Application](http://localhost:8000)
 - [VueJS Frontend Application](http://localhost:8081)
 - [PostGreSQL Admin](http://localhost:8087)
+
+8. For changes in frontend
+
+```
+docker exec -it vueCognito bash
+```
