@@ -24,7 +24,13 @@ docker run --rm \
  composer install --ignore-platform-reqs
 ```
 
-3. Build the docker container
+3. Create $\textcolor{red}{\text{.env.example}}$ and configure $\textcolor{red}{\text{.env}}$ file
+
+```
+Copy .env.example file and create .env file
+```
+
+4. Build the docker container
 
 ```
 docker compose up -d
@@ -33,7 +39,7 @@ yarn install
 yarn dev
 ```
 
-4. Access your resources as below:
+5. Access your resources as below:
 
 - [Laravel Backend Application](http://localhost:8000)
 - [VueJS Frontend Application](http://localhost:8081)
