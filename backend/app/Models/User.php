@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -22,7 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'verification_pin',
     ];
 
     /**
@@ -33,20 +31,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'verification_pin',
-        'email_verified_at',
-        'created_at',
-        'updated_at',
     ];
-
-    protected static function booted()
-    {
-        static::creating(function ($model) {
-            if (!$model->id) {
-                $model->id = Str::uuid()->toString();
-            }
-        });
-    }
 
     /**
      * The attributes that should be cast.
@@ -56,10 +41,5 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'verification_pin'=>'string',
     ];
-
-    protected $primaryKey = 'id';
-    public $incrementing = false;
-    protected $keyType = 'string';
 }
