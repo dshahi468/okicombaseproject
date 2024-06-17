@@ -1,20 +1,23 @@
+<script setup lang="ts">
+import { TextHelper } from '../helper/TextHelper'
+</script>
 <template>
   <div class="h-[100vh] w-full flex justify-center items-center">
     <div
       class="m-2 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
       <form class="space-y-6" action="#">
-        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Verify Email Address</h5>
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">
+          {{ TextHelper.verificationCardHeader }}
+        </h5>
         <p class="text-white text-xs">
-          Before getting started, could you verify your email address by entering the verification
-          pin we just emailed to you? If you didn't receive the email, we will gladly send you
-          another.
+          {{ TextHelper.verificationNote }}
         </p>
         <div>
           <label
             for="verificationpin"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Verification Pin</label
+            >{{ TextHelper.verificationVerificationPin }}</label
           >
           <input
             type="number"
@@ -26,23 +29,23 @@
           />
         </div>
         <div class="text-end">
-          <span class="text-white me-2 text-sm">Didn't get a pin?</span>
+          <span class="text-white me-2 text-sm">{{ TextHelper.verificationNoPin }}</span>
           <RouterLink
             to="/user/forgot"
             class="ms-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
-            >Resend</RouterLink
+            >{{ TextHelper.verificationResend }}</RouterLink
           >
         </div>
         <button
           type="submit"
           class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Verify
+          {{ TextHelper.verificationSubmitButonText }}
         </button>
         <div class="text-sm font-medium text-gray-500 dark:text-gray-300 text-center">
-          <RouterLink to="/user/login" class="text-blue-700 hover:underline dark:text-blue-500"
-            >Back to login</RouterLink
-          >
+          <RouterLink to="/user/login" class="text-blue-700 hover:underline dark:text-blue-500">{{
+            TextHelper.verificationBackLink
+          }}</RouterLink>
         </div>
       </form>
     </div>

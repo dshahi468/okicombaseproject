@@ -1,14 +1,19 @@
+<script setup lang="ts">
+import { TextHelper } from '../helper/TextHelper'
+</script>
 <template>
   <div class="h-[100vh] w-full flex justify-center items-center">
     <div
       class="m-2 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
       <form class="space-y-6" action="#">
-        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign up to our platform</h5>
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">
+          {{ TextHelper.registerCardHeader }}
+        </h5>
         <div>
-          <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Full name</label
-          >
+          <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+            TextHelper.registerFullName
+          }}</label>
           <input
             type="text"
             name="name"
@@ -18,9 +23,9 @@
           />
         </div>
         <div>
-          <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your email</label
-          >
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{
+            TextHelper.registerYourEmail
+          }}</label>
           <input
             type="email"
             name="email"
@@ -31,8 +36,10 @@
           />
         </div>
         <div>
-          <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your password</label
+          <label
+            for="password"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >{{ TextHelper.registerYourPassword }}</label
           >
           <input
             type="password"
@@ -60,14 +67,14 @@
                 to="/user/register"
                 class="text-blue-700 hover:underline dark:text-blue-500"
               >
-                Terms and Conditions
+                {{ TextHelper.registerTerms }}
               </RouterLink>
               and
               <RouterLink
                 to="/user/register"
                 class="text-blue-700 hover:underline dark:text-blue-500"
               >
-                Privacy Policies
+                {{ TextHelper.registerPolicy }}
               </RouterLink>
             </label>
           </div>
@@ -76,13 +83,13 @@
           type="submit"
           class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Register to our platform
+          {{ TextHelper.registerSubmitButtonText }}
         </button>
         <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-          Already has an account?
-          <RouterLink to="/user/login" class="text-blue-700 hover:underline dark:text-blue-500"
-            >Login</RouterLink
-          >
+          {{ TextHelper.registerAlreadyAccount }}
+          <RouterLink to="/user/login" class="text-blue-700 hover:underline dark:text-blue-500">{{
+            TextHelper.registerLogin
+          }}</RouterLink>
         </div>
       </form>
     </div>
