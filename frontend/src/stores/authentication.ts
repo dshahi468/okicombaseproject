@@ -2,7 +2,7 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 
 export const authenticationStore = defineStore('authenticationStore', () => {
-  const login = async (formData: FormData) => {
+  const login = async (formData: FormData): Promise<loginResponse> => {
     return new Promise((resolve, reject) => {
       axios
         .post('login', formData, {
@@ -125,3 +125,21 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     resetPassword
   }
 })
+
+interface TokenInfo {
+  created_at: string
+  expires_at: string
+  token: string
+  tokenable_type: string
+}
+
+interface UserInfo {
+  id: string
+  name: string
+  email: string
+}
+export interface loginResponse {
+  message: string
+  tokenInfo: TokenInfo
+  userInfo: UserInfo
+}

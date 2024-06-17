@@ -7,6 +7,7 @@ import { ValidationHelper } from '../helper/ValidationHelper'
 import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
 import { authenticationStore } from '@/stores/authentication'
 import { computed, ref } from 'vue'
+import router from '@/router'
 
 const formSubmitFlag = ref<boolean>(false)
 const loginData = ref({
@@ -28,6 +29,18 @@ const formSubmit = async () => {
   })
   try {
     const response = await authenticationStore().login(formData)
+    if (response) {
+      localStorage.setItem('userInfo', JSON.stringify(response.userInfo))
+      let cookieString
+      if (process.env.NODE_ENV === 'production') {
+        cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/;domain=.nepaldiscoveries.com;Secure;SameSite=none`
+      } else {
+        cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/`
+      }
+      document.cookie = cookieString
+    }
+    formSubmitFlag.value = false
+    router.push('/')
   } catch (error) {
     formSubmitFlag.value = false
   }

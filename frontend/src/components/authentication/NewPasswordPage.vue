@@ -9,6 +9,7 @@ import { authenticationStore } from '@/stores/authentication'
 import { alertStore } from '@/stores/alert'
 import router from '@/router'
 import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
+import { ErrorHelper } from '../helper/ErrorHelper'
 
 const formSubmitFlag = ref<boolean>(false)
 const resetData = ref({
@@ -33,7 +34,7 @@ const formSubmit = async () => {
     alertStore().updateAlerts({
       title: 'Success',
       type: 'success',
-      message: 'Password successfully reset.'
+      message: ErrorHelper.axios.passwordResetSuccess
     })
     formSubmitFlag.value = false
     router.push('/user/login')

@@ -5,7 +5,8 @@ export class ErrorHelper {
     permissionIssue: 'Permission not granted.',
     internalIssue: 'Something went wrong. Try again later.',
     emailVerified: 'Your account is successfully verified.',
-    verificationPinResend: 'Email verification pin has been resend.'
+    verificationPinResend: 'Email verification pin has been resend.',
+    passwordResetSuccess: 'Password successfully reset.'
   }
   static login = {
     emailRequired: 'Please enter email addres.',
