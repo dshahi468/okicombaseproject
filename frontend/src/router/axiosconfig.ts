@@ -1,0 +1,52 @@
+import axios from 'axios'
+import { alertStore } from '@/stores/alert'
+import { ErrorHelper } from '@/components/helper/ErrorHelper'
+
+axios.defaults.withCredentials = true
+axios.defaults.baseURL =
+  process.env.NODE_ENV === 'production' ? 'https://server-name/' : 'http://localhost:8000/api/'
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+// axios.defaults.baseURL="http://gs.kasturisanjaal.com/studentapi/";
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+axios.defaults.headers.common['Accept'] = 'application/json'
+const accessToken = localStorage.getItem('accessToken')
+if (accessToken) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+}
+axios.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    switch (error.response.status) {
+      case 401:
+        alertStore().updateAlerts({
+          title: ErrorHelper.axios.alert,
+          type: 'danger',
+          message: ErrorHelper.axios.sessionExpired
+        })
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('userinfo')
+        window.location.href = '/user/login'
+        break
+      case 422:
+        alertStore().obtainErrorMessage(error)
+        break
+      case 403:
+        alertStore().updateAlerts({
+          title: ErrorHelper.axios.alert,
+          type: 'danger',
+          message: ErrorHelper.axios.permissionIssue
+        })
+        break
+      default:
+        alertStore().updateAlerts({
+          title: ErrorHelper.axios.alert,
+          type: 'danger',
+          message: ErrorHelper.axios.internalIssue
+        })
+        break
+    }
+  }
+)
