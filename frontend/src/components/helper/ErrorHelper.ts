@@ -4,7 +4,8 @@ export class ErrorHelper {
     sessionExpired: 'Your session has expired.',
     permissionIssue: 'Permission not granted.',
     internalIssue: 'Something went wrong. Try again later.',
-    emailVerified: 'Your account is successfully verified.'
+    emailVerified: 'Your account is successfully verified.',
+    verificationPinResend: 'Email verification pin has been resend.'
   }
   static login = {
     emailRequired: 'Please enter email addres.',
@@ -24,5 +25,19 @@ export class ErrorHelper {
     verificationPinMinLength: 'Please enter 6 digit pin.',
     emailRequired: 'Please enter email addresss.',
     emailEmail: 'Please enter valid email address.'
+  }
+
+  static forgot = {
+    emailRequired: 'Please enter email address.',
+    emailEmail: 'Please eneter valid email address.'
+  }
+
+  static reset = {
+    codeRequired: 'Please enter verification pin.',
+    codeMinLength: 'Please enter 6 digit pin.',
+    emailRequired: 'Please enter email address.',
+    emailEmail: 'Please eneter valid email address.',
+    passwordRequired: 'Please eneter password.',
+    passwordMinLength: 'Password must be at least 8 characters.'
   }
 }

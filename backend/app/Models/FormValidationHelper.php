@@ -69,7 +69,12 @@ class FormValidationHelper extends Model
     public function resetPasswordValidator(Request $request)
     {
         $validatedData = $request->validate([
-            'email'=>['email','required'],
+            'email'=>['email','required',function($attribute,$value,$fail){
+                $check = User::where('email',$value)->exists();
+                if(!$check){
+                    $fail('User do not exists.');
+                }
+            }],
             'password'=>['required','min:8'],
             'code'=>['required',function($attribute,$value,$fail) use ($request){
                 $check = User::where(['email'=>$request->email,'verification_pin'=>$value])->exists();

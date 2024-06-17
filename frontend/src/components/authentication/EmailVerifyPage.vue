@@ -81,7 +81,7 @@ const resendPin = async () => {
       alertStore().updateAlerts({
         title: 'Success',
         type: 'success',
-        message: 'Email verification pin has been resend.'
+        message: ErrorHelper.axios.verificationPinResend
       })
       clearTimeout(timeoutId)
       minutes.value = 2

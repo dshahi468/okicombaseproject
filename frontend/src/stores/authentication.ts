@@ -78,10 +78,50 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     })
   }
 
+  const forgot = async (formData: FormData) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('forgot-password', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
+  const resetPassword = async (formData: FormData) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('confirm-password', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
   return {
     login,
     register,
     emailverify,
-    resentPin
+    resentPin,
+    forgot,
+    resetPassword
   }
 })

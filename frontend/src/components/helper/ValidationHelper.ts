@@ -38,4 +38,26 @@ export class ValidationHelper {
       minLength: helpers.withMessage(ErrorHelper.verify.verificationPinMinLength, minLength(6))
     }
   }
+
+  static forgotValidation = {
+    email: {
+      required: helpers.withMessage(ErrorHelper.forgot.emailRequired, required),
+      email: helpers.withMessage(ErrorHelper.forgot.emailEmail, email)
+    }
+  }
+
+  static resetValidation = {
+    code: {
+      required: helpers.withMessage(ErrorHelper.reset.codeRequired, required),
+      minLength: helpers.withMessage(ErrorHelper.reset.codeMinLength, minLength(6))
+    },
+    email: {
+      required: helpers.withMessage(ErrorHelper.reset.emailRequired, required),
+      email: helpers.withMessage(ErrorHelper.reset.emailEmail, email)
+    },
+    password: {
+      required: helpers.withMessage(ErrorHelper.reset.passwordRequired, required),
+      minLength: helpers.withMessage(ErrorHelper.reset.passwordMinLength, minLength(8))
+    }
+  }
 }
