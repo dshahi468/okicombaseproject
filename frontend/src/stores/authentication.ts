@@ -12,7 +12,64 @@ export const authenticationStore = defineStore('authenticationStore', () => {
         })
         .then((response) => {
           if (response.status == 200) {
-            console.log('Response from api:', response.data)
+            resolve(response.data)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
+  const register = async (formData: FormData) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('register', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
+  const emailverify = async (formData: FormData) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('verify-email', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
+  const resentPin = async (formData: FormData) => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post('resend-confirmation-pin', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data)
           }
         })
         .catch((error) => {
@@ -22,6 +79,9 @@ export const authenticationStore = defineStore('authenticationStore', () => {
   }
 
   return {
-    login
+    login,
+    register,
+    emailverify,
+    resentPin
   }
 })

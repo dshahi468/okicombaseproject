@@ -1,3 +1,17 @@
+<script lang="ts">
+import { defineComponent, toRefs } from 'vue'
+import { alertStore } from '@/stores/alert'
+
+export default defineComponent({
+  setup() {
+    const store = alertStore()
+    const { alertsList } = toRefs(store)
+    return {
+      alertsList
+    }
+  }
+})
+</script>
 <template>
   <div class="alert-notification-container mt-2 me-2">
     <div
@@ -32,62 +46,8 @@
       </div>
     </div>
   </div>
-
-  <!-- <div class="alert-notification-container">
-    <ul class="a-n-c-ul">
-      <li
-        v-for="(alert, index) in alertsList"
-        :key="`alert${index}`"
-        class="a-n-c-u-list"
-        :class="
-          alert.type == 'success'
-            ? 'bg-success'
-            : alert.type == 'warning'
-              ? 'bg-warning'
-              : alert.type == 'danger'
-                ? 'bg-danger'
-                : 'bg-info'
-        "
-      >
-        <div class="a-n-c-message">
-          <div class="a-n-c-m-header flex justify-center items-center">
-            <span class="material-symbols-outlined">
-              {{
-                alert.type == 'success'
-                  ? 'check_circle'
-                  : alert.type == 'danger'
-                    ? 'dangerous'
-                    : alert.type == 'warning'
-                      ? 'warning'
-                      : 'info'
-              }}
-            </span>
-            <span
-              class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
-            >
-              {{ alert.title }}
-            </span>
-          </div>
-          <div class="a-n-c-alert-message">{{ alert.message }}</div>
-        </div>
-      </li>
-    </ul>
-  </div> -->
 </template>
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue'
-import { alertStore } from '@/stores/alert'
 
-export default defineComponent({
-  setup() {
-    const store = alertStore()
-    const { alertsList } = toRefs(store)
-    return {
-      alertsList
-    }
-  }
-})
-</script>
 <style>
 .alert-notification-container {
   position: fixed;

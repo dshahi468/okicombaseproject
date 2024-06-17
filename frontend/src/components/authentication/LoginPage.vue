@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { TextHelper } from '@/components/helper/TextHelper'
 import { ColorHelper } from '../helper/ColorHelper'
+//@ts-ignore
 import { useVuelidate } from '@vuelidate/core'
 import { ValidationHelper } from '../helper/ValidationHelper'
 import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
 import { authenticationStore } from '@/stores/authentication'
 import { computed, ref } from 'vue'
-import { alertStore } from '@/stores/alert'
 
 const formSubmitFlag = ref<boolean>(false)
 const loginData = ref({

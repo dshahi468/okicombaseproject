@@ -42,7 +42,7 @@ const router = createRouter({
           component: RegisterView
         },
         {
-          path: 'verify',
+          path: ':email/verify', //1 is new register verification and 2 is forgot password validation
           name: 'verify',
           component: EmailVerifyView
         },
