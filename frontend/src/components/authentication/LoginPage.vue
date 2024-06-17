@@ -23,7 +23,7 @@ import { ColorHelper } from '../helper/ColorHelper'
             type="email"
             name="email"
             id="email"
-            class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+            class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
             :style="{
               backgroundColor: ColorHelper.authenticationInputFieldBackground,
               color: ColorHelper.authenticationPlaceholderColor
@@ -35,7 +35,8 @@ import { ColorHelper } from '../helper/ColorHelper'
         <div>
           <label
             for="password"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            class="block mb-2 text-sm font-medium"
+            :style="{ color: ColorHelper.authenticationCardTextColor }"
             >{{ TextHelper.loginYourPassword }}</label
           >
           <input
@@ -43,7 +44,7 @@ import { ColorHelper } from '../helper/ColorHelper'
             name="password"
             id="password"
             placeholder="••••••••"
-            class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+            class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
             :style="{
               backgroundColor: ColorHelper.authenticationInputFieldBackground,
               color: ColorHelper.authenticationPlaceholderColor
