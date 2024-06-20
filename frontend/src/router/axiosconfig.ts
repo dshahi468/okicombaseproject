@@ -8,7 +8,7 @@ axios.defaults.baseURL =
     ? 'https://server-name/'
     : import.meta.env.VITE_APPLICATION_BACKEND === 'laravel'
       ? 'http://localhost:8000/api/'
-      : 'http://localhost:3001/auth/'
+      : 'http://localhost:8001/auth/'
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers.common['Accept'] = 'application/json'
 const accessToken = localStorage.getItem('accessToken')
@@ -20,7 +20,6 @@ axios.interceptors.response.use(
     return response
   },
   (error) => {
-    console.log('Error response is:', error.response)
     switch (error.response.status) {
       case 401:
         alertStore().updateAlerts({
