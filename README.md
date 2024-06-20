@@ -63,3 +63,5 @@ php artisan mgirate
 ```
 docker exec -it vueCognito bash
 ```
+
+https://www.youtube.com/watch?v=OauLHcKo7e4&list=PLPMbb3KXRmigGdxkvrGfR4RmsU4J78_BQ&index=6

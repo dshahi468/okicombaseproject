@@ -24,21 +24,8 @@ services:
     networks:
       - sail
     depends_on:
-      # - selenium
       - pgsql
       - phppgadmin
-
-  # selenium:
-  #   # for windows and linux
-  #   # image: selenium/standalone-chrome
-  #   # for mac containing Apple Silicon chip
-  #   image: "seleniarm/standalone-chromium"
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   volumes:
-  #     - "/dev/shm:/dev/shm"
-  #   networks:
-  #     - sail
 
   pgsql:
     image: "postgres:15"
@@ -84,14 +71,6 @@ services:
       - ./servers.json:/pgadmin4/servers.json
       - ./setup_pgadmin.sh:/docker-entrypoint-initdb.d/setup_pgadmin.sh
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: vueCognito
-  #   ports:
-  #     - 8081:80
-
   app:
     build:
       context: .
@@ -117,16 +96,27 @@ services:
     depends_on:
       - app
 
+  nodebackend:
+    build:
+      context: ./nodeapi
+      dockerfile: Dockerfile
+    container_name: nodeExpress
+    ports:
+      - "8001:3001"
+    volumes:
+      - ./nodeapi:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - sail
+
 networks:
   sail:
     driver: bridge
 
 volumes:
-  sail-mysql:
-    driver: local
   sail-pgsql:
-    driver: local
-  sail-redis:
     driver: local
   pgadmin-data:
     driver: local
