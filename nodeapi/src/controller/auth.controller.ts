@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import Cognitoservice from "../services/cognito.service";
 import multer from "multer";
+import jwt from "jsonwebtoken";
 
 class AuthController {
   public path = "/auth";
@@ -90,9 +91,11 @@ class AuthController {
         const refreshToken = authResult["RefreshToken"] ?? null;
         return res.status(200).json({
           message: "Sign-in successful",
-          accessToken: accessToken,
-          idToken: idToken,
-          refreshToken: refreshToken,
+          tokenInfo: {
+            token: accessToken,
+            refreshToken: refreshToken,
+          },
+          userInfo: AuthController.decodeJWT(idToken),
         });
       })
       .catch((error) => {
@@ -209,6 +212,14 @@ class AuthController {
           body("password").isString().isLength({ min: 8 }),
         ];
     }
+  }
+
+  private static decodeJWT(token: string) {
+    const decoded = jwt.decode(token, { complete: true }); // Corrected here
+    if (!decoded) {
+      throw new Error("Invalid token");
+    }
+    return decoded.payload;
   }
 }
 
