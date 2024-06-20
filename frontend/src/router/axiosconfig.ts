@@ -4,9 +4,11 @@ import { ErrorHelper } from '@/components/helper/ErrorHelper'
 
 axios.defaults.withCredentials = true
 axios.defaults.baseURL =
-  process.env.NODE_ENV === 'production' ? 'https://server-name/' : 'http://localhost:8000/api/'
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-// axios.defaults.baseURL="http://gs.kasturisanjaal.com/studentapi/";
+  process.env.NODE_ENV === 'production'
+    ? 'https://server-name/'
+    : import.meta.env.VITE_APPLICATION_BACKEND === 'laravel'
+      ? 'http://localhost:8000/api/'
+      : 'http://localhost:3001/auth/'
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers.common['Accept'] = 'application/json'
 const accessToken = localStorage.getItem('accessToken')
@@ -18,6 +20,7 @@ axios.interceptors.response.use(
     return response
   },
   (error) => {
+    console.log('Error response is:', error.response)
     switch (error.response.status) {
       case 401:
         alertStore().updateAlerts({
@@ -29,6 +32,13 @@ axios.interceptors.response.use(
         localStorage.removeItem('refreshToken')
         localStorage.removeItem('userinfo')
         window.location.href = '/user/login'
+        break
+      case 400:
+        alertStore().updateAlerts({
+          title: ErrorHelper.axios.alert,
+          type: 'danger',
+          message: error.response.data.error
+        })
         break
       case 422:
         alertStore().obtainErrorMessage(error)
