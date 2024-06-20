@@ -31,11 +31,15 @@ const formSubmit = async () => {
     const response = await authenticationStore().login(formData)
     if (response) {
       localStorage.setItem('userInfo', JSON.stringify(response.userInfo))
+      let currentDate = new Date()
+      currentDate.setDate(currentDate.getDate() + 30)
+      const expires = currentDate.toUTCString()
       let cookieString
       if (process.env.NODE_ENV === 'production') {
-        cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/;domain=.nepaldiscoveries.com;Secure;SameSite=none`
+        cookieString = `accessToken=${response.tokenInfo.token};expires=${expires};path=/;domain=.server_name.com;Secure;SameSite=none`
+        //   cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/;domain=.nepaldiscoveries.com;Secure;SameSite=none`
       } else {
-        cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/`
+        cookieString = `accessToken=${response.tokenInfo.token};expires=${expires};path=/`
       }
       document.cookie = cookieString
     }
