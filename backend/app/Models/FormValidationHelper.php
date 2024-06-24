@@ -106,7 +106,7 @@ class FormValidationHelper extends Model
     {
         $validatedData = $request->validate([
             'email'=>['required','email',function ($attribute, $value, $fail) use ($request) {
-                $check = User::where('email',$value)->where('email_verified_at')->exists();
+                $check = User::where('email',$value)->exists();
                 if(!$check){
                     $fail('User do not exists with this email address.');
                     return;
