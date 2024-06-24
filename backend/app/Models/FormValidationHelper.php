@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class FormValidationHelper extends Model
 {
@@ -97,6 +99,39 @@ class FormValidationHelper extends Model
                     $fail('User do not exists.');
             }],
         ]);
+        return $validatedData;
+    }
+
+    public function loginValidation(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email'=>['required','email',function ($attribute, $value, $fail) use ($request) {
+                $check = User::where('email',$value)->where('email_verified_at')->exists();
+                if(!$check){
+                    $fail('User do not exists with this email address.');
+                    return;
+                }
+                $user = User::where('email', $request->email)->where('email_verified_at',null )->exists();
+                if ($user){
+                    $fail('Email not verified. Reset your password.');
+                    return;
+                }
+                $user = User::where('email',$value)->first();
+                if(!Hash::check($request->input('password'),$user->password)){
+                    $fail('Email/Password do not match.');
+                    return;
+                }
+
+            }],
+            'password'=>['required'],
+        ],[
+            'email.required'=>'Please enter email address.',
+            'email.email'=>"Please enter valid email address.",
+            'password.required'=>"Please enter password.",
+        ]);
+        foreach($validatedData as $key=>$value){
+            $validatedData[$key] = strip_tags($value);
+        }
         return $validatedData;
     }
 }
