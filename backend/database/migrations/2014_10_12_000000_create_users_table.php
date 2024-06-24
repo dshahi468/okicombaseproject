@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->integer('type')->default(0)->comment('0 is general user and 1 is admin.');
             $table->string('email')->unique();
             $table->string('verification_pin',6)->nullable();
             $table->timestamp('email_verified_at')->nullable();
