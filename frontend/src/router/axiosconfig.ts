@@ -8,7 +8,7 @@ axios.defaults.baseURL =
     ? 'https://server-name/'
     : import.meta.env.VITE_APPLICATION_BACKEND === 'laravel'
       ? 'http://localhost:8000/api/'
-      : 'http://localhost:8001/auth/'
+      : 'https://1zn3knhau7.execute-api.us-east-1.amazonaws.com/dev/'
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers.common['Accept'] = 'application/json'
 const accessToken = localStorage.getItem('accessToken')

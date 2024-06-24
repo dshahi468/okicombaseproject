@@ -78,11 +78,12 @@ class LaravelAuthController extends Controller
         }
     }
 
-    public function signin(LoginRequest $request)
+    public function signin(Request $request)
     {
         try {
-            $request->authenticate();
-            $user = User::where('email',$request->email)->first();
+            $helper = new FormValidationHelper();
+            $validatedData = $helper->loginValidation($request);
+            $user = User::where('email',$validatedData['email'])->first();
             $token = PersonalAccessTokens::create([
                 'name'=>'PERSONAL_ACCESS_TOKEN',
                 'tokenable_type'=>'ACCESS_TOKEN',
@@ -131,6 +132,9 @@ class LaravelAuthController extends Controller
                 'remember_token'=>Str::random(60),
                 'verification_pin'=>null,
             ]);
+            if (is_null($model->email_verified_at)) {
+                $model->email_verified_at = Carbon::now();
+            }
             if(!$model->save())
                 $flag=false;
             if($flag)
