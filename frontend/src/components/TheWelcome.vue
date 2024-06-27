@@ -1,87 +1,122 @@
 <script setup lang="ts">
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
+import { computed, ref } from 'vue'
+import { ValidationHelper } from './helper/ValidationHelper'
+import useVuelidate from '@vuelidate/core'
+import { ColorHelper } from './helper/ColorHelper'
+import SubmitButtonSpinner from './helper/SubmitButtonSpinner.vue'
+import { generateClient } from 'aws-amplify/api'
+//@ts-ignore
+import { createTodo } from '@/graphql/mutations.js'
+const client = generateClient()
+import axios from 'axios'
+
+const formSubmitFlag = ref<boolean>(false)
+const todoData = ref({
+  name: '',
+  description: ''
+})
+
+const rules = computed(() => ValidationHelper.todoValidation)
+
+const validation = ref(useVuelidate(rules, todoData))
+
+const formSubmit = async () => {
+  if (!(await validation.value.$validate())) return
+  const formData = new FormData()
+  Object.entries(todoData.value).forEach(([key, value]) => {
+    formData.set(key, value as string)
+  })
+  formSubmitFlag.value = true
+  await axios
+    .post('create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      formSubmitFlag.value = false
+      console.log('Response is :', response)
+    })
+    .catch((error) => {
+      formSubmitFlag.value = false
+      console.log('Error')
+    })
+
+  // try {
+  //   formSubmitFlag.value = true
+  //   const newTodo = await client.graphql({
+  //     query: createTodo,
+  //     variables: { input: todoData.value }
+  //   })
+  //   todoData.value = { name: '', description: '' }
+  //   console.log('New to do is:', newTodo)
+  //   formSubmitFlag.value = false
+  // } catch (error) {
+  //   console.log('Error is:', error)
+  //   formSubmitFlag.value = false
+  // }
+}
 </script>
-
 <template>
-  <WelcomeItem>
-    <template #icon>
-      <DocumentationIcon />
-    </template>
-    <template #heading>Documentation Dilendra Vikram Shahi</template>
-    Vue’s
-    <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-    provides you with all information you need to get started.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <ToolingIcon />
-    </template>
-    <template #heading>Tooling</template>
-
-    This project is served and bundled with
-    <a href="https://vitejs.dev/guide/features.html" target="_blank" rel="noopener">Vite</a>. The
-    recommended IDE setup is
-    <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">VSCode</a> +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank" rel="noopener">Volar</a>. If
-    you need to test your components and web pages, check out
-    <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank" rel="noopener"
-      >Cypress Component Testing</a
-    >.
-
-    <br />
-
-    More instructions are available in <code>README.md</code>.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <EcosystemIcon />
-    </template>
-    <template #heading>Ecosystem</template>
-
-    Get official tools and libraries for your project:
-    <a href="https://pinia.vuejs.org/" target="_blank" rel="noopener">Pinia</a>,
-    <a href="https://router.vuejs.org/" target="_blank" rel="noopener">Vue Router</a>,
-    <a href="https://test-utils.vuejs.org/" target="_blank" rel="noopener">Vue Test Utils</a>, and
-    <a href="https://github.com/vuejs/devtools" target="_blank" rel="noopener">Vue Dev Tools</a>. If
-    you need more resources, we suggest paying
-    <a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">Awesome Vue</a>
-    a visit.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <CommunityIcon />
-    </template>
-    <template #heading>Community</template>
-
-    Got stuck? Ask your question on
-    <a href="https://chat.vuejs.org" target="_blank" rel="noopener">Vue Land</a>, our official
-    Discord server, or
-    <a href="https://stackoverflow.com/questions/tagged/vue.js" target="_blank" rel="noopener"
-      >StackOverflow</a
-    >. You should also subscribe to
-    <a href="https://news.vuejs.org" target="_blank" rel="noopener">our mailing list</a> and follow
-    the official
-    <a href="https://twitter.com/vuejs" target="_blank" rel="noopener">@vuejs</a>
-    twitter account for latest news in the Vue world.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <SupportIcon />
-    </template>
-    <template #heading>Support Vue</template>
-
-    As an independent project, Vue relies on community backing for its sustainability. You can help
-    us by
-    <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
-  </WelcomeItem>
+  <div
+    class="max-w-sm mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+  >
+    <form class="space-y-6" @submit.prevent="formSubmit">
+      <div>
+        <label
+          for="name"
+          class="block mb-1 text-sm font-medium"
+          :style="{ color: ColorHelper.authenticationCardTextColor }"
+          >Name</label
+        >
+        <input
+          type="text"
+          name="name"
+          v-model="validation.name.$model"
+          :class="validation.name.$error ? `is-invalid` : ``"
+          class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
+          :style="{
+            backgroundColor: ColorHelper.authenticationInputFieldBackground,
+            color: ColorHelper.authenticationPlaceholderColor
+          }"
+        />
+        <div class="invalid-feedback text-red-800 text-xs mt-1" v-if="validation.name.$error">
+          {{ validation.name.$errors[0].$message }}
+        </div>
+      </div>
+      <div>
+        <label
+          for="description"
+          class="block mb-1 text-sm font-medium"
+          :style="{ color: ColorHelper.authenticationCardTextColor }"
+          >Description</label
+        >
+        <input
+          type="text"
+          name="description"
+          v-model="validation.description.$model"
+          :class="validation.description.$error ? `is-invalid` : ``"
+          class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
+          :style="{
+            backgroundColor: ColorHelper.authenticationInputFieldBackground,
+            color: ColorHelper.authenticationPlaceholderColor
+          }"
+        />
+        <div
+          class="invalid-feedback text-red-800 text-xs mt-1"
+          v-if="validation.description.$error"
+        >
+          {{ validation.description.$errors[0].$message }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        :disabled="formSubmitFlag"
+        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        <SubmitButtonSpinner v-if="formSubmitFlag" />
+        <span v-else>Submit</span>
+      </button>
+    </form>
+  </div>
 </template>

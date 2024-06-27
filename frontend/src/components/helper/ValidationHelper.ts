@@ -1,5 +1,5 @@
 //@ts-ignore
-import { required, email, minLength, helpers } from '@vuelidate/validators'
+import { required, email, minLength, helpers, maxLength } from '@vuelidate/validators'
 import { ErrorHelper } from './ErrorHelper'
 
 export class ValidationHelper {
@@ -58,6 +58,15 @@ export class ValidationHelper {
     password: {
       required: helpers.withMessage(ErrorHelper.reset.passwordRequired, required),
       minLength: helpers.withMessage(ErrorHelper.reset.passwordMinLength, minLength(8))
+    }
+  }
+
+  static todoValidation = {
+    name: {
+      required: helpers.withMessage('Name is required', required)
+    },
+    description: {
+      maxLength: helpers.withMessage('Max length is 100', maxLength(100))
     }
   }
 }

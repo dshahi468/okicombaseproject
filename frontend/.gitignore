@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 coverage
+aws-exports.js
 *.local
 
 /cypress/videos/

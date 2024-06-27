@@ -18,12 +18,6 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
-      meta: { auth: true }
-    },
-    {
       path: '/user',
       name: 'user',
       redirect: '/user/login',
