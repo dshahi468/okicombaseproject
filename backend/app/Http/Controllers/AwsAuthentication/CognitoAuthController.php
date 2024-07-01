@@ -100,7 +100,9 @@ class CognitoAuthController extends Controller
                     $refreshToken = $authResult['RefreshToken'] ?? null;
     
                     return response()->json([
+                        'tokenInfo'=>['accessToken'=>$authResult['AccessToken'],'refreshToken'=>$authResult['RefreshToken'],'token_type'=>$authResult['TokenType']],
                         'message' => 'Sign-in successful',
+                        'authResult'=>$authResult,
                         'accessToken' => $accessToken,
                         'idToken' => $idToken,
                         'refreshToken' => $refreshToken,

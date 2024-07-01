@@ -86,7 +86,7 @@ class LaravelAuthController extends Controller
             $user = User::where('email',$validatedData['email'])->first();
             $token = PersonalAccessTokens::create([
                 'name'=>'PERSONAL_ACCESS_TOKEN',
-                'tokenable_type'=>'ACCESS_TOKEN',
+                'tokenable_type'=>'Bearer',
                 'token'=>$user->id.Str::random(50).time(),
                 'tokenable_id'=>$user->id,
                 'expires_at'=>Carbon::now()->addDays(env('AUTHENTICATION_ACCESS_TOKEN_EXPIRY', 30)),
