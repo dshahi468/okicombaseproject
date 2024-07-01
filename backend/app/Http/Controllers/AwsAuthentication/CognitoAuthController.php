@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Aws\CognitoIdentityProvider\CognitoIdentityProviderClient;
 use Aws\Exception\AwsException;
 use Illuminate\Http\Request;
+use Firebase\JWT\JWT;
+use Firebase\JWT\JWK;
 
 class CognitoAuthController extends Controller
 {
@@ -95,17 +97,17 @@ class CognitoAuthController extends Controller
                 ]);
                 if (isset($result['AuthenticationResult'])) {
                     $authResult = $result['AuthenticationResult'];
-                    $accessToken = $authResult['AccessToken'] ?? null;
                     $idToken = $authResult['IdToken'] ?? null;
-                    $refreshToken = $authResult['RefreshToken'] ?? null;
-    
+                    $region = env('AWS_DEFAULT_REGION');
+                    $userPoolId = env('COGNITO_USER_POOL_ID');
+                    $json = file_get_contents("https://cognito-idp.{$region}.amazonaws.com/{$userPoolId}/.well-known/jwks.json");
+                    $jwks = json_decode($json, true);
+                    $decodedIdToken = JWT::decode($idToken, JWK::parseKeySet($jwks));
+
                     return response()->json([
-                        'tokenInfo'=>['accessToken'=>$authResult['AccessToken'],'refreshToken'=>$authResult['RefreshToken'],'token_type'=>$authResult['TokenType']],
                         'message' => 'Sign-in successful',
-                        'authResult'=>$authResult,
-                        'accessToken' => $accessToken,
-                        'idToken' => $idToken,
-                        'refreshToken' => $refreshToken,
+                        'tokenInfo'=>['accessToken'=>$authResult['AccessToken'],'refreshToken'=>$authResult['RefreshToken'],'token_type'=>$authResult['TokenType']],
+                        'userInfo'=>$decodedIdToken,
                     ], 200);
                 }else{
                     return response()->json(['message'=>'Signin successful','result'=>$result],200);
