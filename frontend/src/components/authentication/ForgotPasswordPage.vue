@@ -23,7 +23,7 @@ const formSubmit = async () => {
   formSubmitFlag.value = true
   const forgotMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlForgotPassword
+      ? authenticationStore().amplifyForgotPassword
       : authenticationStore().forgot
   await forgotMethod(forgotData.value.email)
     .then(() => {

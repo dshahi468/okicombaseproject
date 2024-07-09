@@ -27,7 +27,7 @@ const formSubmit = async () => {
   formSubmitFlag.value = true
   const resetMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlResetPassword
+      ? authenticationStore().amplifyResetPassword
       : authenticationStore().resetPasswords
   try {
     await resetMethod(resetData.value).then(() => {

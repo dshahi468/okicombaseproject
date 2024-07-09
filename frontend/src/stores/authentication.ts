@@ -13,7 +13,7 @@ import {
 } from 'aws-amplify/auth'
 
 export const authenticationStore = defineStore('authenticationStore', () => {
-  const graphQlRegister = async (data: GraphQlSignupParameters) => {
+  const amplifyRegister = async (data: GraphQlSignupParameters) => {
     try {
       const response = await signUp({
         username: data.email,
@@ -35,7 +35,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlVerify = async (verifyData: EmailVerificationParameters) => {
+  const amplifyVerify = async (verifyData: EmailVerificationParameters) => {
     try {
       await confirmSignUp({
         username: verifyData.email,
@@ -47,7 +47,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlResendPin = async (email: string) => {
+  const amplifyResendPin = async (email: string) => {
     try {
       await resendSignUpCode({ username: email })
       return true
@@ -56,7 +56,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlForgotPassword = async (email: string) => {
+  const amplifyForgotPassword = async (email: string) => {
     try {
       await resetPassword({ username: email })
       return true
@@ -65,7 +65,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlResetPassword = async (data: NewPasswordParameters) => {
+  const amplifyResetPassword = async (data: NewPasswordParameters) => {
     try {
       confirmResetPassword({
         username: data.email,
@@ -78,7 +78,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlLogin = async (data: LoginParameters) => {
+  const amplifyLogin = async (data: LoginParameters) => {
     console.log('I am being triggered.', data)
     try {
       await signIn({ username: data.email, password: data.password })
@@ -95,7 +95,7 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     }
   }
 
-  const graphQlSignout = async () => {
+  const amplifySignout = async () => {
     try {
       await signOut()
     } catch (error) {
@@ -244,13 +244,13 @@ export const authenticationStore = defineStore('authenticationStore', () => {
     resentPin,
     forgot,
     resetPasswords,
-    graphQlRegister,
-    graphQlVerify,
-    graphQlResendPin,
-    graphQlForgotPassword,
-    graphQlResetPassword,
-    graphQlLogin,
-    graphQlSignout
+    amplifyRegister,
+    amplifyVerify,
+    amplifyResendPin,
+    amplifyForgotPassword,
+    amplifyResetPassword,
+    amplifyLogin,
+    amplifySignout
   }
 })
 

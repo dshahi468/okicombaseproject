@@ -25,7 +25,7 @@ const formSubmit = async () => {
   formSubmitFlag.value = true
   const loginMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlLogin
+      ? authenticationStore().amplifyLogin
       : authenticationStore().login
   try {
     await loginMethod(loginData.value).then((response) => {

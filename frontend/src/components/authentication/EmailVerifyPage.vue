@@ -33,7 +33,7 @@ const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   const verifyMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlVerify
+      ? authenticationStore().amplifyVerify
       : authenticationStore().emailverify
   formSubmitFlag.value = false
   try {
@@ -76,7 +76,7 @@ const resendPin = async () => {
   countdown()
   const resendMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlResendPin
+      ? authenticationStore().amplifyResendPin
       : authenticationStore().resentPin
   await resendMethod(route.params.email as string)
     .then(() => {

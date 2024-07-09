@@ -8,7 +8,8 @@ import { generateClient } from 'aws-amplify/api'
 //@ts-ignore
 import { createTodo } from '@/graphql/mutations.js'
 const client = generateClient()
-import axios from 'axios'
+// import axios from 'axios'
+import { authenticationStore } from '@/stores/authentication'
 
 const formSubmitFlag = ref<boolean>(false)
 const todoData = ref({
@@ -22,39 +23,43 @@ const validation = ref(useVuelidate(rules, todoData))
 
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
-  const formData = new FormData()
-  Object.entries(todoData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
-  formSubmitFlag.value = true
-  await axios
-    .post('create', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    .then((response) => {
-      formSubmitFlag.value = false
-      console.log('Response is :', response)
-    })
-    .catch((error) => {
-      formSubmitFlag.value = false
-      console.log('Error')
-    })
-
-  // try {
-  //   formSubmitFlag.value = true
-  //   const newTodo = await client.graphql({
-  //     query: createTodo,
-  //     variables: { input: todoData.value }
+  // const formData = new FormData()
+  // Object.entries(todoData.value).forEach(([key, value]) => {
+  //   formData.set(key, value as string)
+  // })
+  // formSubmitFlag.value = true
+  // await axios
+  //   .post('create', formData, {
+  //     headers: {
+  //       'Content-Type': 'multipart/form-data'
+  //     }
   //   })
-  //   todoData.value = { name: '', description: '' }
-  //   console.log('New to do is:', newTodo)
-  //   formSubmitFlag.value = false
-  // } catch (error) {
-  //   console.log('Error is:', error)
-  //   formSubmitFlag.value = false
-  // }
+  //   .then((response) => {
+  //     formSubmitFlag.value = false
+  //     console.log('Response is :', response)
+  //   })
+  //   .catch((error) => {
+  //     formSubmitFlag.value = false
+  //     console.log('Error')
+  //   })
+
+  try {
+    formSubmitFlag.value = true
+    const newTodo = await client.graphql({
+      query: createTodo,
+      variables: { input: todoData.value }
+    })
+    todoData.value = { name: '', description: '' }
+    console.log('New to do is:', newTodo)
+    formSubmitFlag.value = false
+  } catch (error) {
+    console.log('Error is:', error)
+    formSubmitFlag.value = false
+  }
+}
+
+const signout = async () => {
+  await authenticationStore().amplifySignout()
 }
 </script>
 <template>
@@ -118,5 +123,7 @@ const formSubmit = async () => {
         <span v-else>Submit</span>
       </button>
     </form>
+
+    <button @click="signout" class="text-white">Signout</button>
   </div>
 </template>

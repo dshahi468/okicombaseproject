@@ -24,7 +24,7 @@ const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   const registerMethod =
     import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().graphQlRegister
+      ? authenticationStore().amplifyRegister
       : authenticationStore().register
   formSubmitFlag.value = true
   try {
