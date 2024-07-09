@@ -22,17 +22,19 @@ const validation = ref(useVuelidate(rules, registerData))
 
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
+  const registerMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlRegister
+      : authenticationStore().register
   formSubmitFlag.value = true
-  const formData = new FormData()
-  Object.entries(registerData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
   try {
-    const response = await authenticationStore().register(formData)
-    formSubmitFlag.value = false
-    router.push(`/user/${registerData.value.email}/verify`)
+    await registerMethod(registerData.value).then(() => {
+      formSubmitFlag.value = false
+      router.push(`/user/${registerData.value.email}/verify`)
+    })
   } catch (error) {
     formSubmitFlag.value = false
+    console.log('Error is:', error)
   }
 }
 </script>

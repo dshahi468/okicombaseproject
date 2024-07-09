@@ -6,7 +6,7 @@ import { ErrorHelper } from '../helper/ErrorHelper'
 import { ValidationHelper } from '../helper/ValidationHelper'
 //@ts-ignore
 import { useVuelidate } from '@vuelidate/core'
-import { authenticationStore } from '@/stores/authentication'
+import { authenticationStore, type EmailVerificationParameters } from '@/stores/authentication'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import { alertStore } from '@/stores/alert'
@@ -20,8 +20,8 @@ let timeoutId: ReturnType<typeof setTimeout>
 
 const route = useRoute()
 
-const verifyData = ref({
-  email: route.params.email,
+const verifyData = ref<EmailVerificationParameters>({
+  email: route.params.email as string,
   verificationPin: ''
 })
 
@@ -31,20 +31,21 @@ const validation = ref(useVuelidate(rules, verifyData))
 
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
-  formSubmitFlag.value = true
-  const formData = new FormData()
-  Object.entries(verifyData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
+  const verifyMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlVerify
+      : authenticationStore().emailverify
+  formSubmitFlag.value = false
   try {
-    const response = await authenticationStore().emailverify(formData)
-    formSubmitFlag.value = false
-    alertStore().updateAlerts({
-      title: 'Success',
-      type: 'success',
-      message: ErrorHelper.axios.emailVerified
+    await verifyMethod(verifyData.value).then(() => {
+      formSubmitFlag.value = false
+      alertStore().updateAlerts({
+        title: 'Success',
+        type: 'success',
+        message: ErrorHelper.axios.emailVerified
+      })
+      router.push('/user/login')
     })
-    router.push('/user/login')
   } catch (error) {
     formSubmitFlag.value = false
   }
@@ -71,13 +72,14 @@ onBeforeUnmount(() => {
 })
 
 const resendPin = async () => {
-  try {
-    resendPinFlag.value = true
-    countdown()
-    const formData = new FormData()
-    formData.set('email', route.params.email as string)
-    const response = await authenticationStore().resentPin(formData)
-    if (response) {
+  resendPinFlag.value = true
+  countdown()
+  const resendMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlResendPin
+      : authenticationStore().resentPin
+  await resendMethod(route.params.email as string)
+    .then(() => {
       alertStore().updateAlerts({
         title: 'Success',
         type: 'success',
@@ -88,11 +90,11 @@ const resendPin = async () => {
       seconds.value = 0
       resendPinFlag.value = false
       formSubmitFlag.value = false
-    }
-  } catch (error) {
-    resendPinFlag.value = false
-    formSubmitFlag.value = false
-  }
+    })
+    .catch(() => {
+      resendPinFlag.value = false
+      formSubmitFlag.value = false
+    })
 }
 
 const formatTime = (value: number) => {

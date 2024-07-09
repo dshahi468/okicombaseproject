@@ -5,14 +5,14 @@ import { TextHelper } from '../helper/TextHelper'
 import { ValidationHelper } from '../helper/ValidationHelper'
 //@ts-ignore
 import { useVuelidate } from '@vuelidate/core'
-import { authenticationStore } from '@/stores/authentication'
+import { authenticationStore, type NewPasswordParameters } from '@/stores/authentication'
 import { alertStore } from '@/stores/alert'
 import router from '@/router'
 import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
 import { ErrorHelper } from '../helper/ErrorHelper'
 
 const formSubmitFlag = ref<boolean>(false)
-const resetData = ref({
+const resetData = ref<NewPasswordParameters>({
   code: '',
   email: '',
   password: ''
@@ -25,19 +25,20 @@ const validation = ref(useVuelidate(rules, resetData))
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   formSubmitFlag.value = true
-  const formData = new FormData()
-  Object.entries(resetData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
+  const resetMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlResetPassword
+      : authenticationStore().resetPasswords
   try {
-    const response = await authenticationStore().resetPassword(formData)
-    alertStore().updateAlerts({
-      title: 'Success',
-      type: 'success',
-      message: ErrorHelper.axios.passwordResetSuccess
+    await resetMethod(resetData.value).then(() => {
+      alertStore().updateAlerts({
+        title: 'Success',
+        type: 'success',
+        message: ErrorHelper.axios.passwordResetSuccess
+      })
+      formSubmitFlag.value = false
+      router.push('/user/login')
     })
-    formSubmitFlag.value = false
-    router.push('/user/login')
   } catch (error) {
     formSubmitFlag.value = false
   }

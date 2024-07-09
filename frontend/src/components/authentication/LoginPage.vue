@@ -5,12 +5,12 @@ import { ColorHelper } from '../helper/ColorHelper'
 import { useVuelidate } from '@vuelidate/core'
 import { ValidationHelper } from '../helper/ValidationHelper'
 import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
-import { authenticationStore } from '@/stores/authentication'
+import { authenticationStore, type LoginParameters } from '@/stores/authentication'
 import { computed, ref } from 'vue'
 import router from '@/router'
 
 const formSubmitFlag = ref<boolean>(false)
-const loginData = ref({
+const loginData = ref<LoginParameters>({
   email: '',
   password: '',
   rememberMe: false
@@ -23,13 +23,13 @@ const validation = ref(useVuelidate(rules, loginData))
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   formSubmitFlag.value = true
-  const formData = new FormData()
-  Object.entries(loginData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
+  const loginMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlLogin
+      : authenticationStore().login
   try {
-    const response = await authenticationStore().login(formData)
-    if (response) {
+    await loginMethod(loginData.value).then((response) => {
+      formSubmitFlag.value = false
       localStorage.setItem('userInfo', JSON.stringify(response.userInfo))
       let currentDate = new Date()
       currentDate.setDate(currentDate.getDate() + 30)
@@ -42,9 +42,8 @@ const formSubmit = async () => {
         cookieString = `accessToken=${response.tokenInfo.token};expires=${expires};path=/`
       }
       document.cookie = cookieString
-    }
-    formSubmitFlag.value = false
-    router.push('/')
+      router.push('/')
+    })
   } catch (error) {
     formSubmitFlag.value = false
   }

@@ -21,16 +21,18 @@ const validation = ref(useVuelidate(rules, forgotData))
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   formSubmitFlag.value = true
-  const formData = new FormData()
-  Object.entries(forgotData.value).forEach(([key, value]) => {
-    formData.set(key, value as string)
-  })
-  try {
-    const response = await authenticationStore().forgot(formData)
-    router.push('/user/resetpassword')
-  } catch (error) {
-    formSubmitFlag.value = false
-  }
+  const forgotMethod =
+    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
+      ? authenticationStore().graphQlForgotPassword
+      : authenticationStore().forgot
+  await forgotMethod(forgotData.value.email)
+    .then(() => {
+      formSubmitFlag.value = false
+      router.push('/user/resetpassword')
+    })
+    .catch(() => {
+      formSubmitFlag.value = false
+    })
 }
 </script>
 <template>
