@@ -21,7 +21,8 @@ export const authenticationStore = defineStore('authenticationStore', () => {
         options: {
           userAttributes: {
             name: data.name,
-            email: data.email
+            email: data.email,
+            'custom:created_method': 'DEFAULT'
           },
           autoSignIn: false
         }

@@ -10,16 +10,18 @@ import { createTodo } from '@/graphql/mutations.js'
 const client = generateClient()
 // import axios from 'axios'
 import { authenticationStore } from '@/stores/authentication'
+import { signUp } from 'aws-amplify/auth'
 
 const formSubmitFlag = ref<boolean>(false)
-const todoData = ref({
+const registerData = ref({
   name: '',
-  description: ''
+  email: '',
+  password: ''
 })
 
-const rules = computed(() => ValidationHelper.todoValidation)
+const rules = computed(() => ValidationHelper.registerValidation)
 
-const validation = ref(useVuelidate(rules, todoData))
+const validation = ref(useVuelidate(rules, registerData))
 
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
@@ -43,18 +45,36 @@ const formSubmit = async () => {
   //     console.log('Error')
   //   })
 
+  // try {
+  //   formSubmitFlag.value = true
+  //   const newTodo = await client.graphql({
+  //     query: createTodo,
+  //     variables: { input: todoData.value }
+  //   })
+  //   todoData.value = { name: '', description: '' }
+  //   console.log('New to do is:', newTodo)
+  //   formSubmitFlag.value = false
+  // } catch (error) {
+  //   console.log('Error is:', error)
+  //   formSubmitFlag.value = false
+  // }
   try {
-    formSubmitFlag.value = true
-    const newTodo = await client.graphql({
-      query: createTodo,
-      variables: { input: todoData.value }
+    const response = await signUp({
+      username: registerData.value.email,
+      password: registerData.value.password,
+      options: {
+        userAttributes: {
+          name: registerData.value.name,
+          email: registerData.value.email,
+          'custom:created_method': 'SYSTEMADMIN'
+        },
+        autoSignIn: false
+      }
     })
-    todoData.value = { name: '', description: '' }
-    console.log('New to do is:', newTodo)
-    formSubmitFlag.value = false
+    console.log('Response is:', response)
   } catch (error) {
-    console.log('Error is:', error)
-    formSubmitFlag.value = false
+    console.log('Error is error:', error)
+    throw new Error('Error while registering.')
   }
 }
 
@@ -94,24 +114,43 @@ const signout = async () => {
           for="description"
           class="block mb-1 text-sm font-medium"
           :style="{ color: ColorHelper.authenticationCardTextColor }"
-          >Description</label
+          >Email</label
         >
         <input
           type="text"
           name="description"
-          v-model="validation.description.$model"
-          :class="validation.description.$error ? `is-invalid` : ``"
+          v-model="validation.email.$model"
+          :class="validation.email.$error ? `is-invalid` : ``"
           class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
           :style="{
             backgroundColor: ColorHelper.authenticationInputFieldBackground,
             color: ColorHelper.authenticationPlaceholderColor
           }"
         />
-        <div
-          class="invalid-feedback text-red-800 text-xs mt-1"
-          v-if="validation.description.$error"
+        <div class="invalid-feedback text-red-800 text-xs mt-1" v-if="validation.email.$error">
+          {{ validation.email.$errors[0].$message }}
+        </div>
+      </div>
+      <div>
+        <label
+          for="password"
+          class="block mb-1 text-sm font-medium"
+          :style="{ color: ColorHelper.authenticationCardTextColor }"
+          >Password</label
         >
-          {{ validation.description.$errors[0].$message }}
+        <input
+          type="password"
+          name="password"
+          v-model="validation.password.$model"
+          :class="validation.password.$error ? `is-invalid` : ``"
+          class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500"
+          :style="{
+            backgroundColor: ColorHelper.authenticationInputFieldBackground,
+            color: ColorHelper.authenticationPlaceholderColor
+          }"
+        />
+        <div class="invalid-feedback text-red-800 text-xs mt-1" v-if="validation.password.$error">
+          {{ validation.password.$errors[0].$message }}
         </div>
       </div>
       <button

@@ -65,3 +65,5 @@ docker exec -it vueCognito bash
 ```
 
 https://www.youtube.com/watch?v=OauLHcKo7e4&list=PLPMbb3KXRmigGdxkvrGfR4RmsU4J78_BQ&index=6
+
+https://stackoverflow.com/questions/46104056/cognito-without-verifying-email
