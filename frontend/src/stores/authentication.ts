@@ -80,15 +80,21 @@ export const authenticationStore = defineStore('authenticationStore', () => {
   }
 
   const amplifyLogin = async (data: LoginParameters) => {
-    console.log('I am being triggered.', data)
     try {
-      await signIn({ username: data.email, password: data.password })
-      const response2 = await fetchAuthSession()
-      return {
-        tokenInfo: {
-          token: response2.tokens?.accessToken
-        },
-        userInfo: response2.tokens?.idToken?.payload
+      const response = await signIn({ username: data.email, password: data.password })
+      if (response.isSignedIn) {
+        const response2 = await fetchAuthSession()
+        return {
+          tokenInfo: {
+            token: response2.tokens?.accessToken
+          },
+          userInfo: response2.tokens?.idToken?.payload,
+          status: 200
+        }
+      } else {
+        return {
+          status: 401
+        }
       }
     } catch (error) {
       console.log('Error is what:', error)

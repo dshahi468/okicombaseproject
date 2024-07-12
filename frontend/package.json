@@ -21,6 +21,7 @@
     "aws-amplify": "^6.4.0",
     "axios": "^1.7.2",
     "flowbite": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-axios": "^3.5.2",

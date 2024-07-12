@@ -8,6 +8,7 @@ import SubmitButtonSpinner from '../helper/SubmitButtonSpinner.vue'
 import { authenticationStore, type LoginParameters } from '@/stores/authentication'
 import { computed, ref } from 'vue'
 import router from '@/router'
+import { alertStore } from '@/stores/alert'
 
 const formSubmitFlag = ref<boolean>(false)
 const loginData = ref<LoginParameters>({
@@ -23,27 +24,28 @@ const validation = ref(useVuelidate(rules, loginData))
 const formSubmit = async () => {
   if (!(await validation.value.$validate())) return
   formSubmitFlag.value = true
-  const loginMethod =
-    import.meta.env.VITE_APPLICATION_BACKEND == 'graphql'
-      ? authenticationStore().amplifyLogin
-      : authenticationStore().login
   try {
-    await loginMethod(loginData.value).then((response) => {
-      formSubmitFlag.value = false
-      localStorage.setItem('userInfo', JSON.stringify(response.userInfo))
-      let currentDate = new Date()
-      currentDate.setDate(currentDate.getDate() + 30)
-      const expires = currentDate.toUTCString()
-      let cookieString
-      if (process.env.NODE_ENV === 'production') {
-        cookieString = `accessToken=${response.tokenInfo.token};expires=${expires};path=/;domain=.server_name.com;Secure;SameSite=none`
-        //   cookieString = `accessToken=${response.tokenInfo.token};expires=${response.tokenInfo.expires_at};path=/;domain=.nepaldiscoveries.com;Secure;SameSite=none`
-      } else {
-        cookieString = `accessToken=${response.tokenInfo.token};expires=${expires};path=/`
-      }
-      document.cookie = cookieString
-      router.push('/')
-    })
+    await authenticationStore()
+      .amplifyLogin(loginData.value)
+      .then(async (response) => {
+        if (response.status && response.status == 200) {
+          formSubmitFlag.value = false
+          localStorage.setItem('userInfo', JSON.stringify(response.userInfo))
+          router.push('/')
+        } else {
+          alertStore().updateAlerts({
+            title: 'Info',
+            type: 'info',
+            message: 'Verify your account first.'
+          })
+          await authenticationStore()
+            .amplifyResendPin(loginData.value.email)
+            .then(() => {
+              formSubmitFlag.value = false
+              router.push(`/user/${loginData.value.email}/verify`)
+            })
+        }
+      })
   } catch (error) {
     formSubmitFlag.value = false
   }
